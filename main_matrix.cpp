@@ -26,7 +26,9 @@ void print(Matrix<row, col, T>& mat) {
 }
 
 int main() {
-   // freopen("output_matrix.txt", "w", stdout);
+
+    
+    freopen("output_matrix.txt", "w", stdout);
 
     Matrix<4, 4> mat;
     std::cout << mat << std::endl;
@@ -34,21 +36,21 @@ int main() {
     Matrix<4,4> identity = mat.getIdentityMatrix();
     std::cout << identity << std::endl;
 
-    //Matrix<4, 4> res = (identity + 2) * 3;
-    //std::cout << res << std::endl;
+    Matrix<4, 4> res = (identity + 2) * 3;
+    std::cout << res << std::endl;
 
     Matrix<4, 3> mat1(9);
     Matrix<4, 3> mat2(4);
 
-    /*std::cout << (mat1 - 4) << std::endl;*/
+    std::cout << (mat1 - 4) << std::endl;
 
     mat2(2, 1) = 0;
 
-    //const int cell = (2 + mat1 - 1)(1, 2);
+    const int cell = (2 + mat1 - 1)(1, 2);
 
-    //std::cout << "The value of cell 1, 2 is: " << cell << std::endl;
+    std::cout << "The value of cell 1, 2 is: " << cell << std::endl;
 
-    //std::cout << (1 + mat2) << std::endl;
+    std::cout << (1 + mat2) << std::endl;
 
     std::cout << ++mat1 << std::endl;
     std::cout << --mat2 << std::endl;
@@ -118,7 +120,7 @@ int main() {
     std::cout << "trace(m3) = " << double(m3) << std::endl;
     std::cout << std::endl;
 
-    /*Matrix<4, 2, double> m4 = m3 + double(1) - m2 * double(2) + m1;
+   Matrix<4, 2, double> m4 = m3 + double(1) - m2 * double(2) + m1;
     ++m4;
     ++m4;
 
@@ -143,7 +145,7 @@ int main() {
     std::cout << "Printing main diagonal of mf1:" << std::endl;
     printDiag(mf1);
     std::cout << "trace(mf1) = " <<float(mf1) << std::endl;
-    std::cout << std::endl;*/
+    std::cout << std::endl;
 
     return 0;
 }

@@ -13,7 +13,7 @@ class Matrix
 
 public:
 
-	 Matrix(T defaultValue=0) 
+	 Matrix(T defaultValue=0) // WORKING
 	{
 		memoryAllocate();
 		for (int i = 0; i < row; i++)
@@ -26,9 +26,11 @@ public:
 
 	}
 
-	Matrix(Matrix<row, col, T>& other)// copy constructor
+	Matrix(const Matrix<row, col, T>& other)// copy constructor
 	{
+		memoryAllocate();
 		initMatrix(other);
+
 	}
 
 	~Matrix() // destuctor
@@ -38,13 +40,12 @@ public:
 
 	void initMatrix(const Matrix<row, col, T>& other) // intialize matrix with values from another matrix
 	{
-		//freeMemory(data); 
-		//memoryAllocate(data);
 		for (int i = 0; i < row; i++)
 		{
 			for (int j = 0; j < col; j++)
 			{
-				data[i][j] = other.data[i][j];// CHECK LATER
+				this->data[i][j] = other.getData()[i][j];
+				
 			}
 		}
 	}
@@ -54,11 +55,12 @@ public:
 		if (this != &other)
 		{
 			initMatrix(other);
+
 		}
 		return *this;
 	}
 
-	int& getDiag(int& length) const
+	int& getDiag(int& length) const // WORKING
 	{
 		return length = std::min(row, col);
 		
@@ -70,40 +72,26 @@ public:
 	}
 	
 
-
-	/*Matrix<row, col, T> operator+(const T value)
-	{
-	  Matrix<row, col, T> temp1(value); 
-		for (int i = 0; i < row; i++)
-		{
-			for (int j = 0; j < col; j++)
-			{
-				temp1.data[i][j] = temp1.data[i][j] + this->data[i][j];
-			}
-		 }
-		return temp1;
-
-	}*/
-	friend Matrix<row, col, T> operator+(const Matrix<row, col, T>& mat1, const Matrix<row, col, T>& mat2)
+	 friend Matrix<row, col, T> operator+(const Matrix<row, col, T>& mat1, const Matrix<row, col, T>& mat2)
 	{
 		Matrix<row, col, T> temp = mat1;
 		for (int i = 0; i < row; i++)
 		{
 			for (int j = 0; j < col; j++)
 			{
-				temp.getData()[i][j] += (mat2.data)[i][j]; // swap friend with getArray function?
+				temp.data[i][j] += (mat2.data)[i][j]; 
 			}
 		}
 		return temp;
 	}
-	friend Matrix<row, col, T> operator-(const Matrix<row, col, T>& mat1, const Matrix<row, col, T>& mat2)
+	 friend Matrix<row, col, T> operator-(const Matrix<row, col, T>& mat1, const Matrix<row, col, T>& mat2)
 	{
 		Matrix<row, col, T> temp = mat1;
 		for (int i = 0; i < row; i++)
 		{
 			for (int j = 0; j < col; j++)
 			{
-				temp.data[i][j] -= (mat2.data)[i][j]; // swap friend with getArray() function?
+				temp.data[i][j] -= (mat2.data)[i][j]; 
 			}
 		}
 		return temp;
@@ -167,7 +155,7 @@ public:
 
 	
 
-	friend ostream& operator<<(ostream& out, const Matrix<row, col, T>& mat1);
+	template <int row, int col, typename T > friend ostream& operator<<(ostream& out, const Matrix<row, col, T>& mat1);
 
 	T& operator()(int row, int col)
 	{
@@ -213,9 +201,9 @@ public:
 		return temp;
 	}
 
-	  operator int() const
+	 explicit operator T() const // not working properly*******
 	{
-		int temp = 0;
+		T temp = 0;
 		for (int i = 0; i < std::min(row, col); i++)
 		{
 			temp += data[i][i];
@@ -231,7 +219,7 @@ public:
 			data[i] = new T[col];	
 		}
 	}
-	void freeMemory(T** data)
+	void freeMemory()
 	{
 		for (int i = 0; i < row; i++)
 		{
