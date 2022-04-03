@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MATRIX_H
+#define MATRIX_H
 #include <iostream>
 using std::ostream;
 
@@ -12,7 +13,7 @@ class Matrix
 
 public:
 
-	Matrix(T defaultValue = 0) // default constructor - set every cell to default value
+	 Matrix(T defaultValue=0) 
 	{
 		memoryAllocate();
 		for (int i = 0; i < row; i++)
@@ -43,12 +44,12 @@ public:
 		{
 			for (int j = 0; j < col; j++)
 			{
-				data[i][j] = other[i][j];// CHECK LATER
+				data[i][j] = other.data[i][j];// CHECK LATER
 			}
 		}
 	}
 
-	Matrix<row, col, T>& operator=(Matrix<row, col, T>& other)// assigment operator
+	Matrix& operator=(const Matrix<row, col, T>& other)// assigment operator
 	{
 		if (this != &other)
 		{
@@ -63,14 +64,14 @@ public:
 		
 	}
 
-	T** getdata() const
+	T** getData() const
 	{
 		return data;
 	}
 	
 
 
-	Matrix<row, col, T> operator+(int value)
+	/*Matrix<row, col, T> operator+(const T value)
 	{
 	  Matrix<row, col, T> temp1(value); 
 		for (int i = 0; i < row; i++)
@@ -82,7 +83,7 @@ public:
 		 }
 		return temp1;
 
-	}
+	}*/
 	friend Matrix<row, col, T> operator+(const Matrix<row, col, T>& mat1, const Matrix<row, col, T>& mat2)
 	{
 		Matrix<row, col, T> temp = mat1;
@@ -90,7 +91,7 @@ public:
 		{
 			for (int j = 0; j < col; j++)
 			{
-				temp.data[i][j] += (mat2.data)[i][j]; // swap friend with getArray function?
+				temp.getData()[i][j] += (mat2.data)[i][j]; // swap friend with getArray function?
 			}
 		}
 		return temp;
@@ -108,9 +109,12 @@ public:
 		return temp;
 	}
 
-	//Matrix<row, col, T> operator-(const matrix<row, col, T>& other);
+	Matrix operator-()
+	{
+		return *this * (-1);
+	}
 
-	Matrix<row, col, T>& getIdentityMatrix() const // identity
+	Matrix& getIdentityMatrix() const // identity
 	{
 		if (row != col) // CHECK LATER
 		{
@@ -119,18 +123,18 @@ public:
 		Matrix<row, col, T> id;
 		for (int i = 0; i < row; i++)
 		{
-			id.getdata()[i][i] = 1;
+			id.getData()[i][i] = 1;
 		}
 	}
 
-	Matrix<row, col, T> operator++(int) // postfix
+	Matrix operator++(int) // postfix
 	{
 		Matrix<row, col, T> temp = *this;// usage of copy constructor?
 		++(*this);
 		return temp;
 	}
 
-	Matrix<row, col, T>& operator++() // prefix
+	Matrix& operator++() // prefix
 	{
 		for (int i = 0; i < row; i++)
 		{
@@ -142,14 +146,14 @@ public:
 		return *this;
 	}
 
-	Matrix<row, col, T> operator--(int) //  postfix
+	Matrix operator--(int) //  postfix
 	{
 		Matrix<row, col, T> temp = *this;
 		--(*this);
 		return temp;
 	}
 
-	Matrix<row, col, T>& operator--() //prefix
+	Matrix& operator--() //prefix
 	{
 		for (int i = 0; i < row; i++)
 		{
@@ -172,10 +176,6 @@ public:
 
 	bool operator==(Matrix<row, col, T>& other)
 	{
-		if (row != col)// change later - check if both matrixes have same measurments
-		{
-			throw("error");
-		}
 		T** temp = other.getArray();
 		for (int i = 0; i < row; i++)
 		{
@@ -183,7 +183,7 @@ public:
 			{
 				if (data[i][j] != temp[i][j])
 				{
-					return 0
+					return 0;
 				}
 			}
 		}
@@ -200,9 +200,9 @@ public:
 		return 1;
 	}
 
-	Matrix <row, col, T>& operator*(int scalar) //
+	Matrix& operator*(int scalar) //
 	{
-		Matrix<row, col, T> temp = mat1;
+		Matrix<row, col, T> temp = *this;
 		for (int i = 0; i < row; i++)
 		{
 			for (int j = 0; j < col; j++)
@@ -213,34 +213,10 @@ public:
 		return temp;
 	}
 
-	friend Matrix <row, col, T> operator*(Matrix <row1, col1, T>& mat1, Matrix <row2, col2, T>& mat2) // template parameters might be incorrect
+	  operator int() const
 	{
-		if (col1 != row2)
-		{
-			error("cant multiply matrixes");
-		}
-		Matrix <row, col, T> temp;
-
-
-		for (int i = 0; i < row1; i++)
-		{
-			for (int j = 0; j < col2; j++)
-			{
-
-				for (int k = 0; k < col1; k++)
-				{
-					temp.data[i][j] += mat1.data[i][k] * mat2.data[k][j];
-				}
-
-			}
-		}
-		return temp;
-	}
-
-	 operator T() const
-	{
-		T temp = 0;
-		for (int i = 0; i < getDiag(); i++)
+		int temp = 0;
+		for (int i = 0; i < std::min(row, col); i++)
 		{
 			temp += data[i][i];
 		}
@@ -274,7 +250,34 @@ ostream& operator<< (ostream & out, const Matrix<row,col,T>& mat1)
 		{
 			out << mat1.data[i][j] << " ";
 		}
-		out << endl;
+		out << std::endl;
 	}
 	return out;
 }
+
+//broken code section
+
+//friend Matrix <row, col, T> operator*(Matrix <row1, col1, T>& mat1, Matrix <row2, col2, T>& mat2) // template parameters might be incorrect
+	//{
+	//	if (col1 != row2)
+	//	{
+	//		error("cant multiply matrixes");
+	//	}
+	//	Matrix <row, col, T> temp;
+
+	//	for (int i = 0; i < row1; i++)
+	//	{
+	//		for (int j = 0; j < col2; j++)
+	//		{
+
+	//			for (int k = 0; k < col1; k++)
+	//			{
+	//				temp.data[i][j] += mat1.data[i][k] * mat2.data[k][j];
+	//			}
+
+	//		}
+	//	}
+	//	return temp;
+	//}
+
+#endif
