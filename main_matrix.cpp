@@ -27,7 +27,7 @@ void print(Matrix<row, col, T>& mat) {
 
 int main() {
 
-    
+
     freopen("output_matrix.txt", "w", stdout);
 
     Matrix<4, 4> mat;
