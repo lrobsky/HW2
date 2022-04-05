@@ -13,7 +13,7 @@ class Matrix
 
 public:
 
-	Matrix(T defaultValue = 0) // WORKING
+	Matrix(const T defaultValue = 0)
 	{
 		memoryAllocate();
 		for (int i = 0; i < row; i++)
@@ -90,18 +90,18 @@ public:
 		}
 		return temp;
 	}
-	Matrix<row, col, T> operator+(const int value) const
+	friend Matrix<row, col, T> operator+(const Matrix<row, col, T>& mat1, const T value)
 	{
 		Matrix<row, col, T> temp(value);
-		return temp + (*this);
+		return temp + mat1;
 	}
-	friend Matrix<row, col, T> operator+(const int value, const Matrix<row, col, T>& mat) const
+	friend Matrix<row, col, T> operator+(const T value, const Matrix<row, col, T>& mat) 
 	{
 		Matrix<row, col, T> temp(value);
 		return temp + mat;
 	}
 
-	friend Matrix<row, col, T> operator-(const Matrix<row, col, T>& mat1, const Matrix<row, col, T>& mat2) const
+	friend Matrix<row, col, T> operator-(const Matrix<row, col, T>& mat1, const Matrix<row, col, T>& mat2) 
 	{
 		Matrix<row, col, T> temp = mat1;
 		for (int i = 0; i < row; i++)
@@ -114,150 +114,79 @@ public:
 		return temp;
 	}
 
-	Matrix<row, col, T> operator-(const int value) const
+	Matrix<row, col, T> operator-(const T value) const
 	{
 		Matrix<row, col, T> temp(value);
-		return temp - (*this);
+		return (*this) - temp;
 	}
-	friend Matrix<row, col, T> operator-(const int value, const Matrix<row, col, T>& mat) const
+	friend Matrix<row, col, T> operator-(const T value, const Matrix<row, col, T>& mat) 
 	{
 		Matrix<row, col, T> temp(value);
 		return temp - mat;
-
-		Matrix operator-() // unary
-		{
-			return *this * (-1);
-		}
 	}
-		Matrix& getIdentityMatrix() const // identity
+	Matrix<row, col, T> operator-()// unary
+	{
+		Matrix<row, col, T> temp = *this;
+		for (int i = 0; i < row; i++)
 		{
-			if (row != col) // CHECK LATER
+			for (int j = 0; j < col; j++)
 			{
-				throw("error");
-			}
-			Matrix<row, col, T> id;
-			for (int i = 0; i < row; i++)
-			{
-				id.getData()[i][i] = 1;
+				data[i][j] *= -1;
 			}
 		}
 
-		Matrix operator++(int) // postfix
+		return temp;
+	}
+	Matrix<row, col, T> getIdentityMatrix() const // identity
+	{
+		
+		Matrix<row, col, T> id ;
+		for (int i = 0; i < row; i++)
 		{
-			Matrix<row, col, T> temp = *this;// usage of copy constructor?
-			++(*this);
-			return temp;
+			id.getData()[i][i] = 1;
 		}
+		return id;
+	}
 
-		Matrix& operator++() // prefix
+	Matrix<row, col, T> operator++(int) // postfix
+	{
+		Matrix<row, col, T> temp = *this;// usage of copy constructor?
+		++(*this);
+		return temp;
+	}
+
+	Matrix<row, col, T>& operator++() // prefix
+	{
+		for (int i = 0; i < row; i++)
 		{
-			for (int i = 0; i < row; i++)
+			for (int j = 0; j < col; j++)
 			{
-				for (int j = 0; j < col; j++)
-				{
-					data[i][j]++;
-				}
-			}
-			return *this;
-		}
-
-		Matrix operator--(int) //  postfix
-		{
-			Matrix<row, col, T> temp = *this;
-			--(*this);
-			return temp;
-		}
-
-		Matrix& operator--() //prefix
-		{
-			for (int i = 0; i < row; i++)
-			{
-				for (int j = 0; j < col; j++)
-				{
-					data[i][j]--;
-				}
-			}
-			return *this;
-		}
-
-
-
-		template <int row, int col, typename T > friend ostream& operator<<(ostream & out, const Matrix<row, col, T>&mat1);
-
-		T& operator()(int row, int col)
-		{
-			return data[row][col];
-		}
-
-		bool operator==(Matrix<row, col, T>&other)
-		{
-			T** temp = other.getArray();
-			for (int i = 0; i < row; i++)
-			{
-				for (int j = 0; j < col; j++)
-				{
-					if (data[i][j] != temp[i][j])
-					{
-						return 0;
-					}
-				}
-			}
-			return 1;
-		}
-
-		bool operator!=(Matrix<row, col, T>&other)
-		{
-
-			if (*this == other)
-			{
-				return 0;
-			}
-			return 1;
-		}
-
-		Matrix& operator*(int scalar) //
-		{
-			Matrix<row, col, T> temp = *this;
-			for (int i = 0; i < row; i++)
-			{
-				for (int j = 0; j < col; j++)
-				{
-					temp.data[i][j] *= scalar; // swap friend with getArray() function?
-				}
-			}
-			return temp;
-		}
-
-		operator T() const // not working properly*******
-		{
-			T temp = 0;
-			for (int i = 0; i < std::min(row, col); i++)
-			{
-				temp += data[i][i];
-			}
-			return temp;
-		}
-
-		void memoryAllocate()
-		{
-			data = new T * [row];
-			for (int i = 0; i < row; i++)
-			{
-				data[i] = new T[col];
+				data[i][j]++;
 			}
 		}
-		void freeMemory()
-		{
-			for (int i = 0; i < row; i++)
-			{
-				delete[] data[i];
-			}
-			delete[] data;
-		}
-	};
+		return *this;
+	}
 
-	template<int row, int col, typename T>
-	ostream& operator<< (ostream& out, const Matrix<row, col, T>& mat1)
+	Matrix<row, col, T> operator--(int) //  postfix
+	{
+		Matrix<row, col, T> temp = *this;
+		--(*this);
+		return temp;
+	}
+
+	Matrix<row, col, T>& operator--() //prefix
+	{
+		for (int i = 0; i < row; i++)
+		{
+			for (int j = 0; j < col; j++)
+			{
+				data[i][j]--;
+			}
+		}
+		return *this;
+	}
+
+	friend ostream& operator<< (ostream& out, const Matrix<row, col, T>& mat1)
 	{
 		for (int i = 0; i < row; i++)
 		{
@@ -269,6 +198,81 @@ public:
 		}
 		return out;
 	}
+
+	T& operator()(const int row, const int col) const
+	{
+		return data[row][col];
+	}
+
+	bool operator==(Matrix<row, col, T>&other)
+	{
+		T** temp = other.getArray();
+		for (int i = 0; i < row; i++)
+		{
+			for (int j = 0; j < col; j++)
+			{
+				
+				if (std::abs(data[i][j] - temp[i][j])>DBL_EPSILON) // If values are not equal return 0/false.
+				{
+					return 0;
+				}
+			}
+		}
+		return 1;
+	}
+
+	bool operator!=(Matrix<row, col, T>&other)
+	{
+
+		if (*this == other)
+		{
+			return 0;
+		}
+		return 1;
+	}
+
+	Matrix<row, col, T> operator*(T scalar)
+	{
+		Matrix<row, col, T> temp = *this;
+		for (int i = 0; i < row; i++)
+		{
+			for (int j = 0; j < col; j++)
+			{
+				temp.data[i][j] *= scalar;
+			}
+		}
+		return temp;
+	}
+
+	operator T() const // 
+	{
+		T temp = 0;
+		for (int i = 0; i < std::min(row, col); i++)
+		{
+			temp += data[i][i];
+		}
+		return temp;
+	}
+
+	void memoryAllocate()
+	{
+		data = new T * [row];
+		for (int i = 0; i < row; i++)
+		{
+			data[i] = new T[col];
+		}
+	}
+	void freeMemory()
+	{
+		for (int i = 0; i < row; i++)
+		{
+			delete[] data[i];
+		}
+		delete[] data;
+	}
+};
+
+	
 
 	//broken code section
 

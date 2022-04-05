@@ -27,8 +27,7 @@ void print(Matrix<row, col, T>& mat) {
 
 int main() {
 
-
-    freopen("output_matrix.txt", "w", stdout);
+   // freopen("output_matrix.txt", "w", stdout);
 
     Matrix<4, 4> mat;
     std::cout << mat << std::endl;
@@ -119,7 +118,6 @@ int main() {
     printDiag(m3);
     std::cout << "trace(m3) = " << double(m3) << std::endl;
     std::cout << std::endl;
-
    Matrix<4, 2, double> m4 = m3 + double(1) - m2 * double(2) + m1;
     ++m4;
     ++m4;
@@ -132,10 +130,10 @@ int main() {
     printDiag(m4);
     std::cout << "trace(m4) = " << double(m4) << std::endl;
     std::cout << std::endl;
-
+    
 
     Matrix<2, 4, float> mf1(2.5f);
-
+    mf1 = -mf1;
     mf1(0, 0) += 3; mf1(0, 3) -= 0.5f;
     mf1(1, 1) = 0; mf1(1, 2) = 0;
     ++mf1;
