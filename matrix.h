@@ -131,7 +131,7 @@ public:
 		{
 			for (int j = 0; j < col; j++)
 			{
-				data[i][j] *= -1;
+				temp.data[i][j] *= (-1);
 			}
 		}
 
