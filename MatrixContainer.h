@@ -33,7 +33,7 @@ public:
 		}
 	}
 
-	MatrixContainer<row, col, T>& operator=(const MatrixContainer<row, col, T>& other)
+	/*MatrixContainer<row, col, T>& operator=(const MatrixContainer<row, col, T>& other)
 	{
 		delete[] dynamicArray;
 		dynamicArray = new Matrix<row, col, T>*[count];
@@ -42,13 +42,16 @@ public:
 			dynamicArray[i] = &(other.getDynamicArray()[i]);
 		}
 		return *this;
-	}
+	}*/
 
 	~MatrixContainer()
 	{
 		for (int i = 0; i < count; i++)
 		{
-			delete dynamicArray[i];
+			if (dynamicArray[i] != NULL)
+			{
+				delete[] dynamicArray[i];
+			}
 		}
 		delete[] dynamicArray;
 	}
@@ -60,14 +63,14 @@ public:
 
 	void removeLastMatrix()
 	{
-		delete dynamicArray[--count];
+		dynamicArray[--count] = 0;
 		fixArray();
 
 	}
 
 	Matrix<row, col, T> mulMatAtIndexByScalar(int index, const T scalar)
 	{
-		Matrix<row, col, T> temp = index;
+		Matrix<row, col, T> temp = *dynamicArray[index];
 		temp = temp * scalar;
 		return temp;
 	}
@@ -89,9 +92,11 @@ public:
 
 	friend ostream& operator<< (ostream& out, const MatrixContainer<row, col, T>& mat)
 	{
+		out << "There are" << mat.count << "matrices in the container. The matrices:" << std::endl;
 		for (int i = 0; i < mat.count; i++)
 		{
 			out << *(mat.dynamicArray[i]);
+			out << std::endl;
 		}
 		return out;
 	}
@@ -110,7 +115,7 @@ public:
 			{
 				tempArray[i] = dynamicArray[i];
 			}
-			delete dynamicArray;
+			delete[] dynamicArray;
 			dynamicArray = tempArray;
 			arrayLength *= 2;
 		}
@@ -121,7 +126,7 @@ public:
 			{
 				tempArray[i] = dynamicArray[i];
 			}
-			delete dynamicArray;
+			delete[] dynamicArray;
 			dynamicArray = tempArray;
 			arrayLength /= 2;
 		}

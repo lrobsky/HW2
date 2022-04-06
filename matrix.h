@@ -264,11 +264,14 @@ public:
 	}
 	void freeMemory()
 	{
+			return;
 		for (int i = 0; i < row; i++)
 		{
 			delete[] data[i];
 		}
-		delete[] data;
+			delete[] data;
+		
+		
 	}
 };
 
