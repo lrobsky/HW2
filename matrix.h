@@ -50,7 +50,7 @@ public:
 		}
 	}
 
-	Matrix& operator=(const Matrix<row, col, T>& other)// assigment operator
+	Matrix<row, col, T>& operator=(const Matrix<row, col, T>& other)// assigment operator
 	{
 		if (this != &other)
 		{
