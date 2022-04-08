@@ -44,7 +44,7 @@ public:
 		{
 			for (int j = 0; j < col; j++)
 			{
-				this->data[i][j] = other.getData()[i][j];
+				this->data[i][j] = other.data[i][j];
 
 			}
 		}
@@ -143,14 +143,14 @@ public:
 		Matrix<row, col, T> id ;
 		for (int i = 0; i < row; i++)
 		{
-			id.getData()[i][i] = 1;
+			id.data[i][i] = 1;
 		}
 		return id;
 	}
 
 	Matrix<row, col, T> operator++(int) // postfix
 	{
-		Matrix<row, col, T> temp = *this;// usage of copy constructor?
+		Matrix<row, col, T> temp = *this;// 
 		++(*this);
 		return temp;
 	}
@@ -206,13 +206,13 @@ public:
 
 	bool operator==(Matrix<row, col, T>&other)
 	{
-		T** temp = other.getArray();
+		
 		for (int i = 0; i < row; i++)
 		{
 			for (int j = 0; j < col; j++)
 			{
 				
-				if (std::abs(data[i][j] - temp[i][j])>DBL_EPSILON) // If values are not equal return 0/false.
+				if (std::abs(this->data[i][j] - other.data[i][j])>DBL_EPSILON) // If values are not equal return 0/false.
 				{
 					return 0;
 				}
@@ -259,47 +259,44 @@ public:
 		data = new T * [row];
 		for (int i = 0; i < row; i++)
 		{
-			data[i] = new T[col];
+			this->data[i] = new T[col];
 		}
 	}
 	void freeMemory()
 	{
-			return;
+
 		for (int i = 0; i < row; i++)
 		{
 			delete[] data[i];
 		}
-			delete[] data;
-		
-		
+		delete[] data;
+
 	}
+	
+	
 };
+
+template< int row1, int col1, int row2, int col2, typename T>
+ Matrix <row1, col2, T> operator*(Matrix <row1, col1, T>& mat1, Matrix <row2, col2, T>& mat2) 
+{
+	Matrix <row1, col2, T> temp;
+
+	for (int i = 0; i < row1; i++)
+	{
+		for (int j = 0; j < col2; j++)
+		{
+
+			for (int k = 0; k < col1; k++)
+			{
+				temp.getData()[i][j] += mat1.getData()[i][k] * mat2.getData()[k][j];
+			}
+		}
+	}
+	return temp;
+}
 
 	
 
-	//broken code section
-
-	//friend Matrix <row, col, T> operator*(Matrix <row1, col1, T>& mat1, Matrix <row2, col2, T>& mat2) // template parameters might be incorrect
-		//{
-		//	if (col1 != row2)
-		//	{
-		//		error("cant multiply matrixes");
-		//	}
-		//	Matrix <row, col, T> temp;
-
-		//	for (int i = 0; i < row1; i++)
-		//	{
-		//		for (int j = 0; j < col2; j++)
-		//		{
-
-		//			for (int k = 0; k < col1; k++)
-		//			{
-		//				temp.data[i][j] += mat1.data[i][k] * mat2.data[k][j];
-		//			}
-
-		//		}
-		//	}
-		//	return temp;
-		//}
+	
 
 #endif
