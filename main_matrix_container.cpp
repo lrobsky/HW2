@@ -15,7 +15,6 @@ int main()
 	MatrixContainer<3, 3> container; //you may assume that all the matrices in the container have the same template parameters
 	container.addMatrix(mat1);
 	container.addMatrix(mat2);
-	
 	std::cout << "Current size of the container is: " << container.size() << std::endl;
 
 	container.addMatrix(mat3);

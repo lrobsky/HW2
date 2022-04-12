@@ -24,17 +24,19 @@ public:
 	{
 		if (this != &other)
 		{
-			this->arrayLength = other.arrayLength();
-			this->count = other.count();
 			freeArray();
+			this->arrayLength = other.arrayLength;
+			this->count = other.count;
 			dynamicArray = new Matrix<row, col, T>*[count];
 			for (int i = 0; i < count; i++)
 			{
 				Matrix<row, col, T>* tempMatrix = new Matrix<row, col, T>();
-				*tempMatrix = other.DynamicArray[i]; // using overloaded assigment operator from matrix.h 
+				
+				(*tempMatrix) = *(other.dynamicArray[i]); // using overloaded assigment operator from matrix.h 
 				dynamicArray[i] = tempMatrix;
 			}
 		}
+		return *this;
 	}
 
 	MatrixContainer(const MatrixContainer<row, col, T>& other) // copy constructor
