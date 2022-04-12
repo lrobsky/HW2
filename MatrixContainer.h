@@ -1,5 +1,5 @@
-#ifndef MATRIXCONTAINER_H
-#define MATRIXCONTAINER_H
+#ifndef MATRIX_CONTAINER_H
+#define MATRIX_CONTAINER_H
 #include "matrix.h"
 #include <iostream>
 using std::ostream;
@@ -7,54 +7,77 @@ using std::ostream;
 template<int row, int col, typename T = int>
 class MatrixContainer
 {
-	Matrix<row, col, T>** dynamicArray; 
-	 int count;
-	 int arrayLength;
+	Matrix<row, col, T>** dynamicArray;
+	int count;
+	int arrayLength;
 
 
 public:
 
 
-	MatrixContainer(): count(0),arrayLength(1)   // default constructor
+	MatrixContainer() : count(0), arrayLength(1)   // default constructor
 	{
 		dynamicArray = new Matrix<row, col, T>*[1];
 	}
-	//MatrixContainer(const MatrixContainer<row, col, T>& other) //copy constructor
-	//{
-	//	this->arrayLength = other.arrayLength;
-	//	this->count = other.count;
-	//	dynamicArray = new Matrix<row, col, T>*[arrayLength];
-	//	
-	//}
-	/*MatrixContainer<row, col, T>& operator=(const MatrixContainer<row, col, T>& other)
+	MatrixContainer<row, col, T>& operator=(const MatrixContainer<row, col, T>& other) // assigment operator
+	
 	{
 		if (this != &other)
 		{
-
-			delete[] dynamicArray;
+			this->arrayLength = other.arrayLength();
+			this->count = other.count();
+			freeArray();
 			dynamicArray = new Matrix<row, col, T>*[count];
 			for (int i = 0; i < count; i++)
 			{
-				dynamicArray[i] = &(other.getDynamicArray()[i]);
+				Matrix<row, col, T>* tempMatrix = new Matrix<row, col, T>();
+				*tempMatrix = other.DynamicArray[i]; // using overloaded assigment operator from matrix.h 
+				dynamicArray[i] = tempMatrix;
 			}
 		}
-		return *this;	
-	}*/
+	}
 
-	~MatrixContainer() // 
-
-	{	
+	MatrixContainer(const MatrixContainer<row, col, T>& other) // copy constructor
+	{
+		this->arrayLength = other.arrayLength();
+		this->count = other.count();
+		dynamicArray = new Matrix<row, col, T>*[arrayLength];
+		for (int i = 0; i < count; i++)
+		{
+			Matrix<row,col,T>* tempMatrix = new Matrix<row, col, T>();
+			*tempMatrix = other.DynamicArray[i]; // using overloaded assigment operator from matrix.h 
+			dynamicArray[i] = tempMatrix;
+		}
+		return *this;
+	}
+	~MatrixContainer()
+	{
+		freeArray();
+	}
+	void freeArray()
+	{
+		for (int i = 0; i < count; i++)
+		{
+			if (dynamicArray[i] != NULL)
+			{
+				delete dynamicArray[i];
+			}
+		}
 		delete[] dynamicArray;
 	}
 	void addMatrix(Matrix<row, col, T>& mat)
 	{
-		dynamicArray[count++] = &mat; 
+		Matrix<row, col, T>* newMat = new Matrix<row, col, T>();
+		*newMat = mat;
+		dynamicArray[count++] = newMat;
 		fixArray();
 	}
 
 	void removeLastMatrix()
 	{
-		dynamicArray[--count] = 0;
+		Matrix<row, col, T>* temp = dynamicArray[--count];
+		delete temp;
+		dynamicArray[count] = NULL;
 		fixArray();
 
 	}
@@ -99,7 +122,7 @@ public:
 
 	void fixArray()
 	{
-		if (count==arrayLength)
+		if (count == arrayLength)
 		{
 			Matrix<row, col, T>** tempArray = new Matrix<row, col, T>*[arrayLength * 2];
 			for (int i = 0; i < count; i++)
@@ -110,7 +133,7 @@ public:
 			dynamicArray = tempArray;
 			arrayLength *= 2;
 		}
-		else if(arrayLength>=count*4)
+		else if (arrayLength >= count * 4)
 		{
 			Matrix<row, col, T>** tempArray = new Matrix<row, col, T>*[arrayLength / 2];
 			for (int i = 0; i < count; i++)
